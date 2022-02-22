@@ -4,10 +4,10 @@ import { useRouter } from 'next/router';
 
 import classes from './index.module.css';
 
-async function createUser(email, password) {
+async function createUser(email, password, role) {
   const response = await fetch('/api/auth/signup', {
     method: 'POST',
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, role, password }),
     headers: {
       'Content-Type': 'application/json',
     },
@@ -25,7 +25,7 @@ async function createUser(email, password) {
 function AuthForm() {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-
+  const roleInputRef = useRef();
   const [isLogin, setIsLogin] = useState(true);
   const router = useRouter();
 
@@ -38,7 +38,7 @@ function AuthForm() {
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
-
+    const enteredRole = roleInputRef.current.value;
     // optional: Add validation
 
     if (isLogin) {
@@ -50,11 +50,15 @@ function AuthForm() {
 
       if (!result.error) {
         // set some auth state
-        router.replace('/profile');
+        // router.replace('/');
       }
     } else {
       try {
-        const result = await createUser(enteredEmail, enteredPassword);
+        const result = await createUser(
+          enteredEmail,
+          enteredPassword,
+          enteredRole
+        );
         console.log(result);
       } catch (error) {
         console.log(error);
@@ -69,6 +73,10 @@ function AuthForm() {
         <div className={classes.control}>
           <label htmlFor='email'>Your Email</label>
           <input type='email' id='email' required ref={emailInputRef} />
+        </div>
+        <div className={classes.control}>
+          <label htmlFor='role'>Your Email</label>
+          <input type='text' id='role' required ref={roleInputRef} />
         </div>
         <div className={classes.control}>
           <label htmlFor='password'>Your Password</label>
